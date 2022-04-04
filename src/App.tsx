@@ -1,14 +1,15 @@
 import React from "react";
-import "./App.css";
 import styled from "styled-components";
+import moment from "moment";
+
 import { SearchBar } from "./components/SearchBar";
 import { TaskList } from "./components/TaskList";
 import { Task } from "./components/NewTask";
 import { TaskDetails } from "./components/TaskDetails";
-import moment from "moment";
 import { StoreProvider } from "./store/context";
 import { Buckets, TasksCompleted } from "./components/SideBar";
 import { bucketList } from "./components/Bucket";
+import { ModalNewTask } from "./components/ModalNewTask";
 
 export const list: Task[] = [
 	{
@@ -165,6 +166,7 @@ function App(): JSX.Element {
 							onCompletedTask={handleCompletedTask}
 						/>
 					</SecondColumn>
+					<ModalNewTask />
 					{selectedTask && (
 						<ThirdColumn>
 							<TaskDetails />

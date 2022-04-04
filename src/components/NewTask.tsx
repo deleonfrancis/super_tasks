@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import CancelIcon from "@mui/icons-material/Cancel";
+import SendIcon from "@mui/icons-material/Send";
+import Stack from "@mui/material/Stack";
 
 export type Task = {
 	id: string;
@@ -23,8 +27,14 @@ export type Task = {
  * dueDate: string
  * isCompleted: boolean
  */
+export interface NewTaskProps {
+	handleSubmit: () => void;
+	handleCancel: () => void;
+	handleClose: () => void;
+}
 
-export const NewTask: React.FC<Task> = () => {
+export const NewTask: React.FC<NewTaskProps> = (props) => {
+	const { handleSubmit, handleCancel, handleClose } = props;
 	const [taskTitle, setTaskTitle] = useState<string>();
 	const [taskDetails, setTaskDetails] = useState<string>();
 	//   const [dateAndTime, setDateAndTime] = useState<string>("")
@@ -35,6 +45,16 @@ export const NewTask: React.FC<Task> = () => {
 	const handleChangeDetails = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setTaskDetails(event.target.value);
 	};
+
+	// const openCancelDialogOrExit = (taskTitle, taskDetails) => {
+	//   if (taskTitle || taskDetails) {
+	//     // open confirm modal
+	//     console.log("open confirm dialog");
+	//   }
+	//   // exit the new task modal
+	//   else console.log("exit modal");
+	//   // handleClose();
+	// };
 
 	return (
 		<Box
@@ -58,16 +78,23 @@ export const NewTask: React.FC<Task> = () => {
 			</div>
 			<div>
 				<TextField
-					id="standard-multiline-static"
+					id="outlined-multiline-static"
 					label="Details"
 					multiline
 					rows={4}
 					defaultValue=""
-					variant="standard"
 					value={taskDetails}
 					onChange={handleChangeDetails}
 				/>
 			</div>
+			<Stack direction="row" spacing={2}>
+				<Button onClick={handleCancel} variant="outlined" startIcon={<CancelIcon />}>
+					Cancel
+				</Button>
+				<Button onClick={handleSubmit} variant="contained" endIcon={<SendIcon />}>
+					Submit
+				</Button>
+			</Stack>
 		</Box>
 	);
 };
