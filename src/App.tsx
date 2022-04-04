@@ -3,6 +3,7 @@ import "./App.css";
 import styled from "styled-components";
 import { SearchBar } from "./components/SearchBar";
 import { NewTask } from "./components/NewTask";
+import { ModalNewTask } from "./components/ModalNewTask";
 
 const StyledApp = styled.div`
   background-color: #fff;
@@ -68,7 +69,7 @@ function App(): JSX.Element {
       <Content>
         <FirstColumn />
         <SecondColumn>
-          <NewTask />
+          <ModalNewTask />
         </SecondColumn>
       </Content>
     </StyledApp>
