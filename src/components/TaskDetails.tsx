@@ -15,25 +15,42 @@ const Button = styled(MButton)`
 `;
 
 export const TaskDetails: FC = () => {
-	const { selectedTask: task } = React.useContext(StoreContext);
-	if (!task) {
+	const { selectedTask, onDeleteTask, onCloseTaskDetails } = React.useContext(StoreContext);
+
+	if (!selectedTask) {
 		return null;
 	}
+
+	const handleDeleteTask = (): void => {
+		onDeleteTask(selectedTask);
+	};
+
+	const handleCloseTaskDetails = (): void => {
+		onCloseTaskDetails();
+	};
+
 	return (
 		<div style={{ flex: 1 }}>
 			<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 				<span>
-					<h1 style={{ display: "inline-block" }}>{task.title}</h1>
+					<h1 style={{ display: "inline-block" }}>{selectedTask.title}</h1>
 					<span style={{ display: "inline-block", marginLeft: "10px", color: "#bbb" }}>
-						<i>{task.isCompleted ? "Completed" : "Pending"}</i>
+						<i>{selectedTask.isCompleted ? "Completed" : "Pending"}</i>
 					</span>
 				</span>
 			</div>
-			<p>{task.details}</p>
+			<p>{selectedTask.details}</p>
 			<div style={{ textAlign: "center" }}>
-				<Button variant="contained" startIcon={<DeleteIcon />} style={{ textAlign: "center" }}>
+				<Button
+					variant="contained"
+					startIcon={<DeleteIcon />}
+					style={{ textAlign: "center" }}
+					onClick={handleDeleteTask}
+				>
 					Delete
 				</Button>
+				<p></p>
+				<Button onClick={handleCloseTaskDetails}>Close</Button>
 			</div>
 		</div>
 	);

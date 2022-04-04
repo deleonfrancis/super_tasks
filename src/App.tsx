@@ -8,7 +8,7 @@ import { Task } from "./components/NewTask";
 import { TaskDetails } from "./components/TaskDetails";
 import { StoreProvider } from "./store/context";
 import { Buckets, TasksCompleted } from "./components/SideBar";
-import { bucketList } from "./components/Bucket";
+import { bucketList, Bucket } from "./components/Bucket";
 import { ModalNewTask } from "./components/ModalNewTask";
 
 export const list: Task[] = [
@@ -122,6 +122,7 @@ const ThirdColumn = styled.div`
 
 function App(): JSX.Element {
 	const [selectedTask, setSelectedTask] = React.useState<Task | null>(null);
+	const [selectedBucket, setSelectedBucket] = React.useState<Bucket | null>(null);
 	const [taskList, setTaskList] = React.useState<Task[]>(list);
 
 	const handleSelectedTask = (task: Task): void => {
@@ -140,15 +141,28 @@ function App(): JSX.Element {
 		);
 	};
 
-	const value = {
-		taskList: list,
-		bucketList: bucketList,
+	const handleDeletedTask = (task: Task): void => {
+		setTaskList(taskList.filter((t) => t.id !== task.id));
+		if (task.id === selectedTask?.id) {
+			setSelectedTask(null);
+		}
+	};
+
+	const store = {
+		taskList,
+		bucketList,
 		selectedTask,
-		onDeleteTask: (task: Task) => {},
+		selectedBucket,
+		clearSelectedBucket: () => setSelectedBucket(null),
+		onSetSelectedBucket: (bucket: Bucket) => setSelectedBucket(bucket),
+		onDeleteTask: (task: Task) => handleDeletedTask(task),
+		onAddTask: (task: Task) => {},
+		onUpdateTask: (task: Task) => {},
+		onCloseTaskDetails: () => setSelectedTask(null),
 	};
 
 	return (
-		<StoreProvider value={value}>
+		<StoreProvider value={store}>
 			<StyledApp isDetailsOpen={!!selectedTask}>
 				<StyledSearchBar>
 					<SearchBar />
@@ -160,13 +174,12 @@ function App(): JSX.Element {
 					</FirstColumn>
 					<SecondColumn>
 						<TaskList
-							tasks={list}
+							tasks={taskList}
 							bucket="vacation-id"
 							onSelectedTask={handleSelectedTask}
 							onCompletedTask={handleCompletedTask}
 						/>
 					</SecondColumn>
-					<ModalNewTask />
 					{selectedTask && (
 						<ThirdColumn>
 							<TaskDetails />

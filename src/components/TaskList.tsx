@@ -3,6 +3,7 @@ import React, { FC } from "react";
 import styled from "styled-components";
 import { StoreContext } from "../store/context";
 import { bucketList } from "./Bucket";
+import { ModalNewTask } from "./ModalNewTask";
 import { Task } from "./NewTask";
 
 interface TaskListProps {
@@ -80,7 +81,7 @@ const TaskListItem: FC<TaskListItemProps> = (prop) => {
 
 export const TaskList: FC<TaskListProps> = (props) => {
 	const { tasks, onSelectedTask, onCompletedTask, bucket } = props;
-	const { taskList, onDeleteTask } = React.useContext(StoreContext);
+	const { taskList, selectedBucket, onDeleteTask } = React.useContext(StoreContext);
 	const [bucketTitle, setBucketTitle] = React.useState<string>("");
 
 	React.useEffect(() => {
@@ -114,14 +115,27 @@ export const TaskList: FC<TaskListProps> = (props) => {
 		const t = taskList
 			.filter((task) => task.priority === priority)
 			.map((task) => {
+				if (!selectedBucket) {
+					return (
+						<TaskListItem
+							key={task.id}
+							task={task}
+							onClick={handleTaskItem}
+							onDelete={handleDeleteItem}
+							onCompleted={handleCompletedTask}
+						/>
+					);
+				}
 				return (
-					<TaskListItem
-						key={task.id}
-						task={task}
-						onClick={handleTaskItem}
-						onDelete={handleDeleteItem}
-						onCompleted={handleCompletedTask}
-					/>
+					task.bucket === selectedBucket.id && (
+						<TaskListItem
+							key={task.id}
+							task={task}
+							onClick={handleTaskItem}
+							onDelete={handleDeleteItem}
+							onCompleted={handleCompletedTask}
+						/>
+					)
 				);
 			});
 		return t.length > 0 ? t : <p>No tasks</p>;
@@ -133,7 +147,19 @@ export const TaskList: FC<TaskListProps> = (props) => {
 
 	return (
 		<div style={{ width: "100%" }}>
-			<h1 style={{ borderBottom: "1px solid #ebeaea" }}>{bucketTitle}</h1>
+			<div
+				style={{
+					width: "100%",
+					display: "flex",
+					justifyContent: "space-between",
+					alignItems: "center",
+				}}
+			>
+				<h1 style={{ borderBottom: "1px solid #ebeaea", display: "inline-block", width: "85%" }}>
+					{selectedBucket?.name || "All Buckets"}
+				</h1>
+				<ModalNewTask />
+			</div>
 			<PrioritySection section="High Priority">{listTaskItems(PRIORITY.HIGH)}</PrioritySection>
 			<PrioritySection section="Medium Priority">{listTaskItems(PRIORITY.MEDIUM)}</PrioritySection>
 			<PrioritySection section="Low Priority">{listTaskItems(PRIORITY.LOW)}</PrioritySection>
